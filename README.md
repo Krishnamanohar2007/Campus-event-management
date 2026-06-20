@@ -97,4 +97,17 @@ npm start
 - Implement the frontend in `frontend/` and wire it to the API.
 - Add tests and CI, and document API request/response examples.
 
+## Progress
+
+- **Draft README content:** completed — initial README created and cleaned.
+- **Add setup and run instructions:** completed — installation and run steps added for the backend.
+- **Include API routes and env vars:** completed — documented auth routes and required environment variables.
+- **Note known issues and next steps:** completed — middleware and casing issues noted.
+- **Remove stray characters from `README.md`:** completed — fixed hidden/null characters that broke preview.
+- **Remove `nodmeon` dependency:** completed — uninstalled incorrect package and updated `backend/package.json`.
+- **Add `.gitignore` with `.env`:** completed — `.gitignore` added at repo root (includes `.env`).
+- **Remove git remote connections:** completed — removed `origin` remote.
+- **Delete `.git` folder (fully disconnect repo):** completed — repository fully disconnected from Git.
+
+All tracked tasks above are completed. If you'd like, I can now initialize a fresh Git repository and create the initial commit for you.
 
