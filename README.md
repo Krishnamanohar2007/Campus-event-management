@@ -1,61 +1,23 @@
 # Campus Event Management
 
-Simple Campus Event Management project (work-in-progress).
+A small Express + MongoDB backend for managing campus events, users, and registrations. The frontend is a placeholder and can be implemented as a separate SPA.
 
-## Project structure
-- `backend/` — Express + MongoDB API server
-  - `server.js` — app entrypoint
+## Repository layout
+- `backend/` — Express API server (Node.js)
+  - `server.js` — application entrypoint
   - `config/db.js` — MongoDB connection helper
-  - `models/` — Mongoose models (User)
-  - `controllers/` — route handlers (authController)
-  - `routes/` — Express routers (authRoutes)
-  - `middlewares/` — auth middleware
-  - `seedAdmin.js` — one-off script to create an admin user
-- `frontend/` — currently empty (frontend not implemented yet)
+  - `models/` — Mongoose models (`User`, `Event`, `Registration`)
+  - `controllers/` — route handlers (`authController`, `eventController`, `registrationController`)
+  - `routes/` — Express routers
+  - `middlewares/` — auth and role middlewares
+  - `seedAdmin.js` — helper script to create a default admin user
+- `frontend/` — frontend application (TODO)
 
-## Backend details
+## Quickstart (backend)
 
-- Language: JavaScript (Node.js)
-- Frameworks / libs: `express`, `mongoose`, `jsonwebtoken`, `bcryptjs`, `cors`, `dotenv`
-- Entry point: `backend/server.js` (listens on port 5000 by default)
+Prerequisites: Node.js (16+), npm, MongoDB (or a hosted Mongo URI).
 
-### Important scripts (from `backend/package.json`)
-- `npm start` — run `node server.js`
-- `npm run dev` — run `nodemon server.js` (dev)
-
-### Environment variables
-Created a `.env` file in `backend/`
-
-Optional:
-- `PORT` — port for the server (defaults to 5000 in `server.js`)
-
-### API endpoints (current)
-
-- `GET /` — health / welcome message
-- `POST /api/auth/register` — register a new user
-  - body: `{ name, email, password, role }`
-  - note: registration as `admin` is rejected by the controller
-- `POST /api/auth/login` — login
-  - body: `{ email, password }`
-  - returns: JWT token and basic user info
-- `GET /api/auth/profile` — protected route, returns user profile
-  - requires `Authorization: Bearer <token>` header
-
-### Seed admin
-Run the seed script to create a default admin user (uses `.env` `MONGO_URI`):
-
-```bash
-cd backend
-node seedAdmin.js
-```
-
-Default seeded admin credentials (from `seedAdmin.js`):
-- email: `admin@campus.com`
-- password: `admin@123`
-
-## Setup & run (backend)
-
-1. Open a terminal and go to the backend folder:
+1. Open a terminal and change to the backend folder:
 
 ```bash
 cd backend
@@ -67,47 +29,73 @@ cd backend
 npm install
 ```
 
-3. Create a `.env` file with `MONGO_URI` and `JWT_SECRET`.
+3. Create a `.env` file in `backend/` with the following variables:
 
-4. (Optional) Seed the admin user:
+- `MONGO_URI` — MongoDB connection string
+- `JWT_SECRET` — secret used to sign JWTs
+- (optional) `PORT` — port for the server (defaults to 5000)
+
+4. (Optional) Seed an admin user:
 
 ```bash
 node seedAdmin.js
 ```
 
-5. Start the server:
+5. Start the server (development):
 
 ```bash
 npm run dev
-# or
+```
+
+Or start production mode:
+
+```bash
 npm start
 ```
 
-## Known issues and notes (as of now)
-- `backend/middlewares/authMiddleware.js` has bugs to fix before protected routes work:
-  - The `protect` function uses `await` but is not declared `async`.
-  - `User` is referenced but not imported in that file.
-  - These issues will cause runtime errors when hitting protected routes.
-- File naming/casing: controllers and seed script import the model as `../models/User` while the file is `models/user.js`; this works on Windows (case-insensitive) but may cause issues on case-sensitive filesystems.
+The API is available at `http://localhost:5000` by default.
 
-## Next steps / suggestions
+## Main API endpoints
 
-- Fix `authMiddleware.js`: import `User` and declare `protect` as `async`.
-- Add more models and controllers for events, registrations, and organizers.
-- Implement the frontend in `frontend/` and wire it to the API.
-- Add tests and CI, and document API request/response examples.
+Authentication
+- `POST /api/auth/register` — register a new user
+  - body: `{ name, email, password, role }` (role is usually `user`)
+- `POST /api/auth/login` — login and receive a JWT
+  - body: `{ email, password }`
+- `GET /api/auth/profile` — protected, returns current user profile
 
-## Progress
+Events
+- `GET /api/events` — list events
+- `GET /api/events/:id` — get event details
+- `POST /api/events` — create an event (protected, role-based)
 
-- **Draft README content:** completed — initial README created and cleaned.
-- **Add setup and run instructions:** completed — installation and run steps added for the backend.
-- **Include API routes and env vars:** completed — documented auth routes and required environment variables.
-- **Note known issues and next steps:** completed — middleware and casing issues noted.
-- **Remove stray characters from `README.md`:** completed — fixed hidden/null characters that broke preview.
-- **Remove `nodmeon` dependency:** completed — uninstalled incorrect package and updated `backend/package.json`.
-- **Add `.gitignore` with `.env`:** completed — `.gitignore` added at repo root (includes `.env`).
-- **Remove git remote connections:** completed — removed `origin` remote.
-- **Delete `.git` folder (fully disconnect repo):** completed — repository fully disconnected from Git.
+Registrations
+- `POST /api/registrations` — register user for an event
+- `GET /api/registrations` — list registrations (protected)
 
-All tracked tasks above are completed. If you'd like, I can now initialize a fresh Git repository and create the initial commit for you.
+Note: Use `Authorization: Bearer <token>` header for protected routes.
+
+## Seed admin
+
+Running `node seedAdmin.js` will create a default admin account using credentials configured inside that script. Update `seedAdmin.js` or the `.env` values before running in production.
+
+## Development notes
+
+- Watch out for case sensitivity in model filenames on non-Windows systems.
+- Ensure `backend/middlewares/authMiddleware.js` imports the `User` model and that async functions are declared correctly.
+
+## Contributing / Next steps
+
+- Implement the `frontend/` app and connect it to the backend APIs.
+- Add tests and CI workflow.
+- Harden authentication and input validation.
+
+If you want, I can also:
+
+- initialize a fresh Git repository and create an initial commit
+- add a minimal `frontend/` starter (React + Vite)
+- create Postman/openAPI docs for the API
+
+---
+Updated `README.md` to improve setup instructions and API summary.
 
