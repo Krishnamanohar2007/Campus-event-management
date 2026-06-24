@@ -14,7 +14,7 @@ const  registerForEvent = async (req, res) => {
             return res.status(400).json({ message: 'Registrations closed. Event has already completed' });
         }
 
-        const existingRegistration = await Registration.findOne({ event: eventId, user: req.user._id });
+        const existingRegistration = await Registration.findOne({ event: eventId, student: req.user._id });
         if (existingRegistration) {
             return res.status(400).json({ message: 'User already registered for this event' });
         }
